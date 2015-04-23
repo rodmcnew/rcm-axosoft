@@ -1,0 +1,33 @@
+{
+  "name": "reliv/rcm-axosoft",
+  "description": "Error logger for Axosoft on-time.",
+  "type": "library",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "reliv",
+    "error",
+    "exception",
+    "module",
+    "zf2",
+    "axosoft",
+    "on-time"
+  ],
+  "minimum-stability": "stable",
+  "homepage": "https://github.com/reliv/rcm-axosoft",
+  "authors": [
+    {
+      "name": "James Jervis",
+      "email": "jjervis@relivinc.com",
+      "homepage": "https://github.com/reliv"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "reliv/axosoft-api": "1.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Reliv\\RcmAxosoft\\": "src/"
+    }
+  }
+}
