@@ -1,6 +1,6 @@
 <?php
 
-namespace Reliv\Log\RcmAxosoft;
+namespace Reliv\RcmAxosoft\Log;
 
 use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
 use RcmErrorHandler\Log\AbstractErrorLogger;

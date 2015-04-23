@@ -38,7 +38,7 @@ return [
 
     'service_manager' => [
         'factories' => [
-            'Reliv\RcmAxosoft\Log\AxosoftLogger' => '\RcmAxosoft\Factory\AxosoftLoggerFactory',
+            'Reliv\RcmAxosoft\Log\AxosoftLogger' => 'Reliv\RcmAxosoft\Factory\AxosoftLoggerFactory',
         ]
     ],
 ];
