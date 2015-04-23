@@ -25,6 +25,9 @@
     "php": ">=5.5",
     "reliv/axosoft-api": "1.*"
   },
+  "require-dev": {
+    "reliv/axosoft-api": "*@dev"
+  },
   "autoload": {
     "psr-4": {
       "Reliv\\RcmAxosoft\\": "src/"
