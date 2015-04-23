@@ -3,7 +3,7 @@
  * Module Config For ZF2
  */
 
-namespace Reliv\Log\RcmAxosoft;
+namespace Reliv\RcmAxosoft;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 
