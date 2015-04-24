@@ -1,30 +1,6 @@
 <?php
 /**
- * Module Config For ZF2
- */
-
-namespace Reliv\RcmAxosoft;
-
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-
-/**
- * Class Module
- */
-class Module implements AutoloaderProviderInterface
-{
-    public function getAutoloaderConfig()
-    {
-        return [
-            'Zend\Loader\StandardAutoloader' => [
-                'namespaces' => [
-                    __NAMESPACE__ => __DIR__ . '/src',
-                ],
-            ],
-        ];
-    }
-
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
-    }
-}
+* This file is placed here for compatibility with Zendframework 2's ModuleManager.
+* It allows usage of this module even without composer.
+*/
+require_once __DIR__ . '/src/Module.php';
