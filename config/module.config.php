@@ -19,6 +19,9 @@ return [
                 'Closed' => 'Closed',
             ],
 
+            // Item type to enter on error
+            'itemType' => 'defect',
+
             // Include dump of server vars - true to include server dump
             'includeServerDump' => true,
 
