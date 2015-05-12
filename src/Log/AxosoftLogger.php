@@ -6,7 +6,6 @@ use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
 use RcmErrorHandler\Log\AbstractErrorLogger;
 use Reliv\AxosoftApi\Model\GenericApiRequest;
 use Reliv\AxosoftApi\V5\Items\ApiRequestList;
-use Reliv\AxosoftApi\V5\Items\Defects\ApiRequestCreate;
 
 /**
  * Class AxosoftLogger
@@ -45,6 +44,16 @@ class AxosoftLogger extends AbstractErrorLogger
     protected $api = null;
 
     /**
+     * @var array
+     */
+    protected $itemTypeCreateMap = [
+        'defect' => 'Reliv\AxosoftApi\V5\Items\Defects\ApiRequestCreate',
+        'incident' => 'Reliv\AxosoftApi\V5\Items\Incidents\ApiRequestCreate',
+        'feature' => 'Reliv\AxosoftApi\V5\Items\Features\ApiRequestCreate',
+        'task' => 'Reliv\AxosoftApi\V5\Items\Tasks\ApiRequestCreate',
+    ];
+
+    /**
      * @param \mixed $api
      * @param array  $options
      */
@@ -62,6 +71,24 @@ class AxosoftLogger extends AbstractErrorLogger
     protected function getApi()
     {
         return $this->api;
+    }
+
+    /**
+     * getItemObject
+     *
+     * @return AbstractApiRequestCreate
+     */
+    protected function getItemObject()
+    {
+        $itemClass = $this->itemTypeCreateMap['defect'];
+
+        $itemType = $this->getOption('itemType','defect');
+
+        if(isset($this->itemTypeCreateMap[$itemType])){
+            $itemClass = $this->itemTypeCreateMap[$itemType];
+        }
+
+        return new $itemClass();
     }
 
     /**
@@ -191,7 +218,7 @@ class AxosoftLogger extends AbstractErrorLogger
     protected function createIssue($summary, $extra = [])
     {
         // Add a new defect
-        $request = new ApiRequestCreate();
+        $request = $this->getItemObject();
 
         $description = $this->getDescription($extra);
 
