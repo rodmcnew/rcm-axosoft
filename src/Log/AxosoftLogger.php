@@ -43,6 +43,9 @@ class AxosoftLogger extends AbstractErrorLogger
      */
     protected $api = null;
 
+    /**
+     * @var array
+     */
     protected $itemTypeCreateMap = [
         'defect' => 'Reliv\AxosoftApi\V5\Items\Defects\ApiRequestCreate',
         'incident' => 'Reliv\AxosoftApi\V5\Items\Incidents\ApiRequestCreate',
@@ -73,7 +76,7 @@ class AxosoftLogger extends AbstractErrorLogger
     /**
      * getItemObject
      *
-     * @return void
+     * @return AbstractApiRequestCreate
      */
     protected function getItemObject()
     {
