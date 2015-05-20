@@ -22,7 +22,7 @@
     }
   ],
   "require": {
-    "php": ">=5.5",
+    "php": ">=5.4",
     "reliv/axosoft-api": "1.*"
   },
   "require-dev": {
