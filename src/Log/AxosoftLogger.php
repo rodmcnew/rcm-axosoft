@@ -82,9 +82,9 @@ class AxosoftLogger extends AbstractErrorLogger
     {
         $itemClass = $this->itemTypeCreateMap['defect'];
 
-        $itemType = $this->getOption('itemType','defect');
+        $itemType = $this->getOption('itemType', 'defect');
 
-        if(isset($this->itemTypeCreateMap[$itemType])){
+        if (isset($this->itemTypeCreateMap[$itemType])) {
             $itemClass = $this->itemTypeCreateMap[$itemType];
         }
 
@@ -152,7 +152,6 @@ class AxosoftLogger extends AbstractErrorLogger
         $existingItem = null;
 
         foreach ($data as $item) {
-
             if (!in_array($item['status']['name'], $enterIssueIfNotStatus)) {
                 // we return the first one we find
                 return $item;

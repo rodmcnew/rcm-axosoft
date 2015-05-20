@@ -17,6 +17,7 @@ namespace Reliv\RcmAxosoft\Exception;
  * @version   Release: <package_version>
  * @link      https://github.com/reliv
  */
-class AxosoftLoggerException extends \Exception {
+class AxosoftLoggerException extends \Exception
+{
 
-} 
+}

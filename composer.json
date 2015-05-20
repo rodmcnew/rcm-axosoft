@@ -22,11 +22,12 @@
     }
   ],
   "require": {
-    "php": ">=5.5",
+    "php": ">=5.4",
     "reliv/axosoft-api": "1.*"
   },
   "require-dev": {
-    "reliv/axosoft-api": "1.*@dev"
+    "phpunit/phpunit": "4.6.*",
+    "squizlabs/php_codesniffer": "2.*"
   },
   "autoload": {
     "psr-4": {
