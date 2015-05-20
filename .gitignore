@@ -1,3 +1,7 @@
+build
+composer.lock
+composer.phar
+nbproject
 ._*
 .~lock.*
 .buildpath
@@ -5,6 +9,5 @@
 .idea
 .project
 .settings
-build
-composer.lock
-nbproject
+vendor
+

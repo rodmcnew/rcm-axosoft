@@ -18,6 +18,7 @@ namespace Reliv\RcmAxosoft\Exception;
  * @link      https://github.com/reliv
  */
 
-class AxosoftListenerException extends \Exception {
+class AxosoftListenerException extends \Exception
+{
 
-} 
+}
