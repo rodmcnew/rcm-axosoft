@@ -22,6 +22,9 @@ return [
             // Item type to enter on error
             'itemType' => 'defect',
 
+            // On duplicate log entries, we will not resend until this many sec has past
+            'tryResubmitTimeout' => 5,
+
             // Include dump of server vars - true to include server dump
             'includeServerDump' => true,
 
