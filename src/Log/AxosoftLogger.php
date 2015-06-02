@@ -44,14 +44,20 @@ class AxosoftLogger extends AbstractErrorLogger
     protected $api = null;
 
     /**
+     * @var int Count the number submitted
+     */
+    protected $submittedNumber = 0;
+
+    /**
      * @var array
      */
-    protected $itemTypeCreateMap = [
-        'defect' => 'Reliv\AxosoftApi\V5\Items\Defects\ApiRequestCreate',
-        'incident' => 'Reliv\AxosoftApi\V5\Items\Incidents\ApiRequestCreate',
-        'feature' => 'Reliv\AxosoftApi\V5\Items\Features\ApiRequestCreate',
-        'task' => 'Reliv\AxosoftApi\V5\Items\Tasks\ApiRequestCreate',
-    ];
+    protected $itemTypeCreateMap
+        = [
+            'defect' => 'Reliv\AxosoftApi\V5\Items\Defects\ApiRequestCreate',
+            'incident' => 'Reliv\AxosoftApi\V5\Items\Incidents\ApiRequestCreate',
+            'feature' => 'Reliv\AxosoftApi\V5\Items\Features\ApiRequestCreate',
+            'task' => 'Reliv\AxosoftApi\V5\Items\Tasks\ApiRequestCreate',
+        ];
 
     /**
      * @param \mixed $api
@@ -92,6 +98,17 @@ class AxosoftLogger extends AbstractErrorLogger
     }
 
     /**
+     * canLog
+     *
+     * @return bool
+     */
+    protected function canCreate()
+    {
+        // Limit one error per request
+        return ($this->submittedNumber > 0);
+    }
+
+    /**
      * log
      *
      * @param int   $priority
@@ -109,10 +126,18 @@ class AxosoftLogger extends AbstractErrorLogger
         if ($existingItem) {
             // Add comment
             $this->addComment($existingItem, $summary, $extra);
-        } else {
-            // create issue
-            $this->createIssue($summary, $extra);
+
+            return $this;
         }
+
+        if (!$this->canCreate()) {
+            return $this;
+        }
+
+        $this->submittedNumber++;
+
+        // create issue
+        $this->createIssue($summary, $extra);
 
         return $this;
     }
@@ -138,7 +163,8 @@ class AxosoftLogger extends AbstractErrorLogger
         $response = $api->send($request);
 
         if ($api->hasError($response)) {
-            throw new AxosoftLoggerException('Existing item search failed. ' . $response->getMessage());
+            throw new AxosoftLoggerException('Existing item search failed. '
+                . $response->getMessage());
         }
 
         $data = $response->getData();
@@ -201,7 +227,8 @@ class AxosoftLogger extends AbstractErrorLogger
         $response = $api->send($request);
 
         if ($api->hasError($response)) {
-            throw new AxosoftLoggerException('Could and comment to item. ' . $response->getMessage());
+            throw new AxosoftLoggerException('Could and comment to item. '
+                . $response->getMessage());
         }
     }
 
@@ -229,7 +256,8 @@ class AxosoftLogger extends AbstractErrorLogger
         $response = $api->send($request);
 
         if ($api->hasError($response)) {
-            throw new AxosoftLoggerException('Could not create item. ' . $response->getMessage());
+            throw new AxosoftLoggerException('Could not create item. '
+                . $response->getMessage());
         }
     }
 
