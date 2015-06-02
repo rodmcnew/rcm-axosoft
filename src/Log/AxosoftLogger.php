@@ -44,9 +44,10 @@ class AxosoftLogger extends AbstractErrorLogger
     protected $api = null;
 
     /**
-     * @var int Count the number submitted
+     * @var array Track the submitted items 'Summary' => DateTime
+     * - NOTE: This may cause memory issues for long running processes
      */
-    protected $submittedNumber = 0;
+    protected $submitted = [];
 
     /**
      * @var array
@@ -98,14 +99,70 @@ class AxosoftLogger extends AbstractErrorLogger
     }
 
     /**
-     * canLog
+     * addSubmitted
+     *
+     * @param $summary
+     *
+     * @return void
+     */
+    protected function addSubmitted($summary)
+    {
+        $this->submitted[$summary] = new \DateTime();
+    }
+
+    /**
+     * removeSubmitted
+     *
+     * @param $summary
+     *
+     * @return void
+     */
+    protected function removeSubmitted($summary)
+    {
+        unset($this->submitted[$summary]);
+    }
+
+    /**
+     * getSubmittedTime
+     *
+     * @param $summary
+     *
+     * @return null
+     */
+    protected function getSubmittedTime($summary)
+    {
+        if (isset($this->submitted[$summary])) {
+            return $this->submitted[$summary];
+        }
+
+        return null;
+    }
+
+    /**
+     * canCreate
      *
      * @return bool
      */
-    protected function canCreate()
+    protected function canCreate($summary)
     {
-        // Limit one error per request
-        return ($this->submittedNumber > 0);
+        $existing = $this->getSubmittedTime($summary);
+
+        if ($existing === null) {
+            return true;
+        }
+
+        $tryResubmitTimeout = $this->getOption('tryResubmitTimeout', 5);
+
+        $now = new \DateTime();
+
+        $diff = $now->getTimestamp() - $existing->getTimestamp();
+
+        if ($diff >= $tryResubmitTimeout) {
+            $this->removeSubmitted($summary);
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -129,12 +186,6 @@ class AxosoftLogger extends AbstractErrorLogger
 
             return $this;
         }
-
-        if (!$this->canCreate()) {
-            return $this;
-        }
-
-        $this->submittedNumber++;
 
         // create issue
         $this->createIssue($summary, $extra);
@@ -243,6 +294,10 @@ class AxosoftLogger extends AbstractErrorLogger
      */
     protected function createIssue($summary, $extra = [])
     {
+        if (!$this->canCreate($summary)) {
+            return;
+        }
+
         // Add a new defect
         $request = $this->getItemObject();
 
@@ -259,6 +314,8 @@ class AxosoftLogger extends AbstractErrorLogger
             throw new AxosoftLoggerException('Could not create item. '
                 . $response->getMessage());
         }
+
+        $this->addSubmitted($summary);
     }
 
     /**
