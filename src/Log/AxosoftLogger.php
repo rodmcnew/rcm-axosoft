@@ -310,7 +310,7 @@ class AxosoftLogger extends AbstractErrorLogger
 
         $releaseId = $this->getOption('releaseId');
         if ($releaseId) {
-            $request->setReleaseId($releaseId);
+            $request->setRelease($releaseId);
         }
 
         $api = $this->getApi();
