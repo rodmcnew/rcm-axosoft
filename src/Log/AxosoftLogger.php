@@ -62,7 +62,7 @@ class AxosoftLogger extends AbstractErrorLogger
 
     /**
      * @param \mixed $api
-     * @param array  $options
+     * @param array $options
      */
     public function __construct($api, $options = [])
     {
@@ -159,6 +159,7 @@ class AxosoftLogger extends AbstractErrorLogger
 
         if ($diff >= $tryResubmitTimeout) {
             $this->removeSubmitted($summary);
+
             return true;
         }
 
@@ -168,7 +169,7 @@ class AxosoftLogger extends AbstractErrorLogger
     /**
      * log
      *
-     * @param int   $priority
+     * @param int $priority
      * @param mixed $message
      * @param array $extra
      *
@@ -307,6 +308,11 @@ class AxosoftLogger extends AbstractErrorLogger
         $request->setName($summary);
         $request->setProject($this->getOption('projectId', 0));
 
+        $releaseId = $this->getOption('releaseId');
+        if ($releaseId) {
+            $request->setRelease($releaseId);
+        }
+
         $api = $this->getApi();
         $response = $api->send($request);
 
@@ -321,7 +327,7 @@ class AxosoftLogger extends AbstractErrorLogger
     /**
      * getDescription
      *
-     * @param array  $extra
+     * @param array $extra
      * @param string $lineBreak
      *
      * @return mixed|string
