@@ -308,7 +308,7 @@ class AxosoftLogger extends AbstractErrorLogger
         $request->setName($summary);
         $request->setProject($this->getOption('projectId', 0));
 
-        $releaseId = $this->getOption('releaseId', null);
+        $releaseId = $this->getOption('releaseId');
         if ($releaseId) {
             $request->setReleaseId($releaseId);
         }
