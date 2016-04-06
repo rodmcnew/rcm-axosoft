@@ -2,6 +2,7 @@
 
 namespace Reliv\RcmAxosoft\Log;
 
+use Reliv\AxosoftApi\V5\ApiCreate\AbstractApiRequestCreate;
 use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
 use RcmErrorHandler\Log\AbstractErrorLogger;
 use Reliv\AxosoftApi\Model\GenericApiRequest;
