@@ -2,28 +2,27 @@
 
 namespace Reliv\RcmAxosoft\Log;
 
-use Reliv\AxosoftApi\V5\ApiCreate\AbstractApiRequestCreate;
-use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
-use RcmErrorHandler\Log\AbstractErrorLogger;
+use Psr\Log\LoggerInterface;
+use RcmErrorHandler2\Log\AbstractErrorLogger;
 use Reliv\AxosoftApi\Model\GenericApiRequest;
+use Reliv\AxosoftApi\V5\ApiCreate\AbstractApiRequestCreate;
 use Reliv\AxosoftApi\V5\Items\ApiRequestList;
+use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
 
 /**
- * Class AxosoftLogger
- *
- * AxosoftLogger
+ * Class AxosoftLoggerPsr
  *
  * PHP version 5
  *
  * @category  Reliv
  * @package   Reliv\RcmAxosoft
  * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2014 Reliv International
+ * @copyright 2016 Reliv International
  * @license   License.txt New BSD License
  * @version   Release: <package_version>
  * @link      https://github.com/reliv
  */
-class AxosoftLogger extends AbstractErrorLogger
+class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
 {
     /**
      * array(
@@ -57,7 +56,8 @@ class AxosoftLogger extends AbstractErrorLogger
     public function __construct($api, $options = [])
     {
         $this->api = $api;
-        $this->options = array_merge($options, $this->options);
+        $options = array_merge($options, $this->options);
+        parent::__construct($options);
     }
 
     /**
@@ -149,7 +149,7 @@ class AxosoftLogger extends AbstractErrorLogger
 
         return false;
     }
-
+    
     /**
      * log
      *
@@ -159,7 +159,7 @@ class AxosoftLogger extends AbstractErrorLogger
      *
      * @return $this
      */
-    public function log($priority, $message, $extra = [])
+    public function log($priority, $message, array $extra = [])
     {
         $summary = $this->prepareSummary($priority, $message);
 
