@@ -1,7 +1,4 @@
 <?php
-/**
- * Module Config For ZF2
- */
 
 namespace Reliv\RcmAxosoft;
 
