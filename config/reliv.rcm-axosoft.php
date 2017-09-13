@@ -21,8 +21,13 @@ return [
         // Item type to enter on error
         'itemType' => 'defect',
 
+        // Related release is applicable
+        'releaseId' => null,
+
         // On duplicate log entries, we will not resend until this many sec has past
         'tryResubmitTimeout' => 5,
+
+        // ==== For StringFormatter ===
 
         // Include dump of server vars - true to include server dump
         'includeServerDump' => true,
@@ -38,5 +43,16 @@ return [
         'summaryPreprocessors' => [
             // $pattern => $replacement
         ],
+
+        // Linebreak to use
+        'lineBreak' => "</br>\n",
+
+        // Methods to skip for logging and exception
+        'exceptionMethodsBlacklist' => [
+            'getTrace',
+            'getPrevious',
+            'getTraceAsString',
+        ],
+
     ],
 ];

@@ -2,11 +2,14 @@
 
 namespace Reliv\RcmAxosoft\Log;
 
+use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
-use RcmErrorHandler2\Log\AbstractErrorLogger;
+use Reliv\AxosoftApi\Model\ApiError;
 use Reliv\AxosoftApi\Model\GenericApiRequest;
+use Reliv\AxosoftApi\Service\AxosoftApi;
 use Reliv\AxosoftApi\V5\ApiCreate\AbstractApiRequestCreate;
 use Reliv\AxosoftApi\V5\Items\ApiRequestList;
+use Reliv\AxosoftApi\V5\Items\ApiResponseList;
 use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
 
 /**
@@ -22,26 +25,36 @@ use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
  * @version   Release: <package_version>
  * @link      https://github.com/reliv
  */
-class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
+class AxosoftLoggerPsr extends AbstractLogger implements LoggerInterface
 {
     /**
-     * array(
-     * 'itemType' => 'defects', // Bug
-     * 'projectId' => 10
-     * 'enterIssueIfNotStatus' => array(
-     *   'closed',
-     *   'resolved',
-     *  ),
-     * ),
+     * [
+     *  'itemType' => 'defect', // Bug
+     *  'tryResubmitTimeout' => 5,
+     *  'projectIdToCheckForIssues' => 0,
+     *  'enterIssueIfNotStatus' => [],
+     *  'projectId' => 0,
+     *  'releaseId' => null,
+     * ]
      *
      * @var array $options
      */
     protected $options = [];
 
     /**
-     * @var \Reliv\AxosoftApi\Service\AxosoftApi $api
+     * @var AxosoftApi $api
      */
     protected $api = null;
+
+    /**
+     * @var DescriptionFromLog
+     */
+    protected $descriptionFromLog;
+
+    /**
+     * @var SummaryFromLog
+     */
+    protected $summaryFromLog;
 
     /**
      * @var array Track the submitted items 'Summary' => DateTime
@@ -50,14 +63,80 @@ class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
     protected $submitted = [];
 
     /**
-     * @param \mixed $api
-     * @param array $options
+     * @param AxosoftApi         $api
+     * @param DescriptionFromLog $descriptionFromLog
+     * @param SummaryFromLog     $summaryFromLog
+     * @param array              $options
      */
-    public function __construct($api, $options = [])
-    {
+    public function __construct(
+        AxosoftApi $api,
+        DescriptionFromLog $descriptionFromLog,
+        SummaryFromLog $summaryFromLog,
+        array $options = []
+    ) {
         $this->api = $api;
-        $options = array_merge($options, $this->options);
-        parent::__construct($options);
+        $this->options = array_merge($this->options, $options);
+        $this->descriptionFromLog = $descriptionFromLog;
+        $this->summaryFromLog = $summaryFromLog;
+    }
+
+    /**
+     * log
+     *
+     * @param int   $priority
+     * @param mixed $message
+     * @param array $extra
+     *
+     * @return $this
+     */
+    public function log($priority, $message, array $extra = [])
+    {
+        $summary = $this->summaryFromLog->__invoke(
+            $priority,
+            $message,
+            $extra,
+            $this->options
+        );
+
+        $existingItem = $this->getExistingItem($summary);
+
+        if ($existingItem) {
+            // Add comment
+            $this->addComment($existingItem, $summary, $extra);
+
+            return $this;
+        }
+
+        if (!$this->canCreate($summary)) {
+            return $this;
+        }
+
+        $description = $this->descriptionFromLog->__invoke(
+            $priority,
+            $message,
+            $extra,
+            $this->options
+        );
+
+        // create issue
+        $this->createIssue($summary, $description);
+
+        return $this;
+    }
+
+    /**
+     * @param      $key
+     * @param null $default
+     *
+     * @return mixed|null
+     */
+    protected function getOption($key, $default = null)
+    {
+        if (array_key_exists($key, $this->options)) {
+            return $this->options[$key];
+        }
+
+        return $default;
     }
 
     /**
@@ -111,7 +190,7 @@ class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
      *
      * @param $summary
      *
-     * @return null
+     * @return null|\DateTime
      */
     protected function getSubmittedTime($summary)
     {
@@ -149,34 +228,6 @@ class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
 
         return false;
     }
-    
-    /**
-     * log
-     *
-     * @param int $priority
-     * @param mixed $message
-     * @param array $extra
-     *
-     * @return $this
-     */
-    public function log($priority, $message, array $extra = [])
-    {
-        $summary = $this->prepareSummary($priority, $message);
-
-        $existingItem = $this->getExistingItem($summary);
-
-        if ($existingItem) {
-            // Add comment
-            $this->addComment($existingItem, $summary, $extra);
-
-            return $this;
-        }
-
-        // create issue
-        $this->createIssue($summary, $extra);
-
-        return $this;
-    }
 
     /**
      * getExistingItem
@@ -196,11 +247,14 @@ class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
         $request->setSearchField('name');
         $request->setSortFields('created_date_time');
 
+        /** @var ApiError|ApiResponseList $response */
         $response = $api->send($request);
 
         if ($api->hasError($response)) {
-            throw new AxosoftLoggerException('Existing item search failed. '
-                . $response->getMessage());
+            throw new AxosoftLoggerException(
+                'Existing item search failed. '
+                . $response->getMessage()
+            );
         }
 
         $data = $response->getData();
@@ -260,33 +314,28 @@ class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
 
         $api = $this->getApi();
 
+        /** @var ApiError|ApiResponseList $response */
         $response = $api->send($request);
 
         if ($api->hasError($response)) {
-            throw new AxosoftLoggerException('Could and comment to item. '
-                . $response->getMessage());
+            throw new AxosoftLoggerException(
+                'Could and comment to item. '
+                . $response->getMessage()
+            );
         }
     }
 
     /**
-     * createIssue
-     *
-     * @param       $summary
-     * @param array $extra
+     * @param $summary
+     * @param $description
      *
      * @return void
-     * @throws \Exception
+     * @throws AxosoftLoggerException
      */
-    protected function createIssue($summary, $extra = [])
+    protected function createIssue($summary, $description)
     {
-        if (!$this->canCreate($summary)) {
-            return;
-        }
-
         // Add a new defect
         $request = $this->getItemObject();
-
-        $description = $this->getDescription($extra);
 
         $request->setDescription($description);
         $request->setName($summary);
@@ -298,49 +347,17 @@ class AxosoftLoggerPsr extends AbstractErrorLogger implements LoggerInterface
         }
 
         $api = $this->getApi();
+        /** @var ApiError|ApiResponseList $response */
         $response = $api->send($request);
 
         if ($api->hasError($response)) {
-            throw new AxosoftLoggerException('Could not create item. '
-                . $response->getMessage());
+            throw new AxosoftLoggerException(
+                'Could not create item. '
+                . $response->getMessage()
+            );
         }
 
         $this->addSubmitted($summary);
-    }
-
-    /**
-     * getDescription
-     *
-     * @param array $extra
-     * @param string $lineBreak
-     *
-     * @return mixed|string
-     */
-    protected function getDescription($extra = [], $lineBreak = '<br/>')
-    {
-        $description = parent::getDescription($extra, $lineBreak);
-
-        $description = str_replace("\n", $lineBreak, $description);
-
-        return $description;
-    }
-
-    /**
-     * prepareSummary
-     *
-     * @param $priority
-     * @param $message
-     *
-     * @return mixed|string
-     */
-    protected function prepareSummary($priority, $message)
-    {
-        $summary = parent::prepareSummary($priority, $message);
-
-        // Limit is 150 chars, we add quotes and dots, so we have 145 chars left
-        $summary = substr($summary, 0, 145) . '...';
-
-        return $summary;
     }
 
     /**
