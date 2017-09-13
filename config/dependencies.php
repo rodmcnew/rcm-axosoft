@@ -30,8 +30,8 @@ return [
         \Reliv\RcmAxosoft\LogPrepare\StringFromLogExtraException::class
         => \Reliv\RcmAxosoft\LogPrepare\StringFromLogExtraExceptionFactory::class,
 
-        \Reliv\RcmAxosoft\LogPrepare\StringFromLogRequest::class
-        => \Reliv\RcmAxosoft\LogPrepare\StringFromLogRequestFactory::class,
+        \Reliv\RcmAxosoft\LogPrepare\StringFromLogUrl::class
+        => \Reliv\RcmAxosoft\LogPrepare\StringFromLogUrlFactory::class,
 
         \Reliv\RcmAxosoft\LogPrepare\StringFromLogServerDump::class
         => \Reliv\RcmAxosoft\LogPrepare\StringFromLogServerDumpFactory::class,

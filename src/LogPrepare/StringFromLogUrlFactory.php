@@ -7,17 +7,17 @@ use Psr\Container\ContainerInterface;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class StringFromLogRequestFactory
+class StringFromLogUrlFactory
 {
     /**
      * __invoke
      *
      * @param ContainerInterface $container
      *
-     * @return StringFromLogRequest
+     * @return StringFromLogUrl
      */
     public function __invoke($container)
     {
-        return new StringFromLogRequest();
+        return new StringFromLogUrl();
     }
 }

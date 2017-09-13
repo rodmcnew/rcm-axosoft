@@ -22,7 +22,7 @@ class StringFromLogExtraExceptionFactory
 
         return new StringFromLogExtraException(
             $container->get(StringFromArray::class),
-            $configRoot['Reliv\RcmAxosoft']['errorLogger']['exceptionMethodsBlacklist']
+            $configRoot['Reliv\RcmAxosoft']['errorLogger']['exceptionMethodsToCallWhiteList']
         );
     }
 }

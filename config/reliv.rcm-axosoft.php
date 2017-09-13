@@ -48,10 +48,12 @@ return [
         'lineBreak' => "</br>\n",
 
         // Methods to skip for logging and exception
-        'exceptionMethodsBlacklist' => [
-            'getTrace',
-            'getPrevious',
-            'getTraceAsString',
+        'exceptionMethodsToCallWhiteList' => [
+            'getMessage',
+            'getFile',
+            'getLine',
+            'getCode',
+            'getTraceAsString'
         ],
 
     ],

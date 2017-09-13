@@ -15,31 +15,26 @@ class StringFromLogExtraException extends StringFromLogAbstract implements Strin
     /**
      * @var array
      */
-    protected $exceptionMethodsBlacklist;
+    protected $exceptionMethodsToCallWhiteList;
 
     /**
      * @param StringFromArray $stringFromArray
-     * @param array           $exceptionMethodsBlacklist
+     * @param array $exceptionMethodsToCallWhiteList
      */
     public function __construct(
         StringFromArray $stringFromArray,
-        array $exceptionMethodsBlacklist
-        = [
-            'getTrace',
-            'getPrevious',
-            'getTraceAsString',
-        ]
+        array $exceptionMethodsToCallWhiteList = []
     ) {
         $this->stringFromArray = $stringFromArray;
-        $this->exceptionMethodsBlacklist = $exceptionMethodsBlacklist;
+        $this->exceptionMethodsToCallWhiteList = $exceptionMethodsToCallWhiteList;
     }
 
     /**
      *
-     * @param mixed  $priority
+     * @param mixed $priority
      * @param string $message
-     * @param array  $extra
-     * @param array  $options
+     * @param array $extra
+     * @param array $options
      *
      * @return string
      */
@@ -53,29 +48,27 @@ class StringFromLogExtraException extends StringFromLogAbstract implements Strin
             return '';
         }
 
+        $lineBreak = $this->getOption($options, 'lineBreak', "\n");
+
         $exception = $extra['exception'];
 
         if (!$exception instanceof \Throwable && !$exception instanceof \Exception) {
             return json_encode($exception);
         }
 
-        $exceptionMethodsBlacklist = $this->getOption(
+        $exceptionMethodsToCallWhiteList = $this->getOption(
             $options,
-            'exceptionMethodsBlacklist',
-            $this->exceptionMethodsBlacklist
+            'exceptionMethodsToCallWhiteList',
+            $this->exceptionMethodsToCallWhiteList
         );
 
         $return = [];
         $return['exception'] = get_class($exception);
         $methods = get_class_methods($exception);
         foreach ($methods as $method) {
-            if (substr($method, 0, 3) === "get"
-                && !in_array(
-                    $method,
-                    $exceptionMethodsBlacklist
-                )
+            if (in_array($method, $exceptionMethodsToCallWhiteList)
             ) {
-                $return[$method] = $exception->$method();
+                $return[$method] = str_replace("\n", $lineBreak, $exception->$method());
             }
         }
 
