@@ -67,6 +67,8 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements Description
             $description = $message . $lineBreak;
         }
 
+        $description .= 'Level: ' . $priority . $lineBreak;
+
         $requestString = $this->stringFromLogRequest->__invoke(
             $priority,
             $message,
