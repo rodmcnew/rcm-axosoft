@@ -20,8 +20,7 @@ class SummaryFromLogBasic extends StringFromLogAbstract implements SummaryFromLo
         string $message,
         array $extra = [],
         array $options = []
-    ): string
-    {
+    ): string {
         $preprocessors = $this->getOption($options, 'summaryPreprocessors', []);
 
         foreach ($preprocessors as $pattern => $replacement) {

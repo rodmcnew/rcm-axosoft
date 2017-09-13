@@ -48,8 +48,7 @@ class StringFromLogExtraException extends StringFromLogAbstract implements Strin
         string $message,
         array $extra = [],
         array $options = []
-    ): string
-    {
+    ): string {
         if (!isset($extra['exception'])) {
             return '';
         }

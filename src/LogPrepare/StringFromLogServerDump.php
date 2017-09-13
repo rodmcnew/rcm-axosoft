@@ -34,8 +34,7 @@ class StringFromLogServerDump extends StringFromLogAbstract implements StringFro
         string $message,
         array $extra = [],
         array $options = []
-    ): string
-    {
+    ): string {
         $lineBreak = $this->getOption($options, 'lineBreak', "\n");
 
         $includeServerDump = $this->getOption($options, 'includeServerDump', false);

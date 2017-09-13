@@ -34,8 +34,7 @@ class StringFromLogSession extends StringFromLogAbstract implements StringFromLo
         string $message,
         array $extra = [],
         array $options = []
-    ): string
-    {
+    ): string {
         $includeSessionVars = $this->getOption($options, 'includeSessionVars', null);
 
         if (!isset($_SESSION) || empty($includeSessionVars)) {

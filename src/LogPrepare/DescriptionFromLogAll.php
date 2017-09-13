@@ -58,8 +58,7 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements Description
         string $message,
         array $extra = [],
         array $options = []
-    ): string
-    {
+    ): string {
         $lineBreak = $this->getOption($options, 'lineBreak', "\n");
 
         if (isset($extra['description'])) {

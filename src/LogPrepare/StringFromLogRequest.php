@@ -20,8 +20,7 @@ class StringFromLogRequest extends StringFromLogAbstract implements StringFromLo
         string $message,
         array $extra = [],
         array $options = []
-    ): string
-    {
+    ): string {
         $lineBreak = $this->getOption($options, 'lineBreak', "\n");
         $string = '';
 
