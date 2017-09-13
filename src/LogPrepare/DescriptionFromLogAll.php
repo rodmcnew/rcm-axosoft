@@ -77,7 +77,7 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements Description
         );
 
         if (!empty($requestString)) {
-            $description .= 'Request ---- ' . $lineBreak . $requestString . $lineBreak;
+            $description .= 'Request: ' . $lineBreak . $requestString . $lineBreak;
         }
 
         if (isset($extra['file'])) {
