@@ -10,7 +10,7 @@
     "module",
     "zf2",
     "axosoft",
-    "on-time"
+    "logger"
   ],
   "minimum-stability": "stable",
   "homepage": "https://github.com/reliv/rcm-axosoft",
@@ -23,7 +23,9 @@
   ],
   "require": {
     "php": ">=5.4",
-    "reliv/axosoft-api": "1.*"
+    "reliv/axosoft-api": "~1.2",
+    "psr/container": "~1.0",
+    "psr/log": "~1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "4.6.*",

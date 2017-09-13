@@ -5,7 +5,7 @@ namespace Reliv\RcmAxosoft;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 
 /**
- * Class Module
+ * ZF2 Module
  */
 class Module implements AutoloaderProviderInterface
 {

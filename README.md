@@ -1,5 +1,4 @@
 Rcm Axosoft
-========
+===========
 
-- Error Logger 
-- Primarily for RcmErrorHandler
+Uses Axosoft API to log errors as tickets.

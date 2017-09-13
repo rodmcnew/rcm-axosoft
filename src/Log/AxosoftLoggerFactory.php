@@ -1,25 +1,12 @@
 <?php
 
-namespace Reliv\RcmAxosoft\Factory;
+namespace Reliv\RcmAxosoft\Log;
 
-use Reliv\RcmAxosoft\Log\AxosoftLogger;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Class AxosoftLoggerFactory
- *
- * LongDescHere
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Reliv\RcmAxosoft
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright ${YEAR} Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @deprecated
  */
 class AxosoftLoggerFactory implements FactoryInterface
 {

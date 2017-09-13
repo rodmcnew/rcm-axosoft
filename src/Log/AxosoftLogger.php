@@ -9,19 +9,7 @@ use Reliv\AxosoftApi\Model\GenericApiRequest;
 use Reliv\AxosoftApi\V5\Items\ApiRequestList;
 
 /**
- * Class AxosoftLogger
- *
- * AxosoftLogger
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Reliv\RcmAxosoft
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2014 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @deprecated
  */
 class AxosoftLogger extends AbstractErrorLogger
 {
