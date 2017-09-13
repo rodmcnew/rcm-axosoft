@@ -5,7 +5,7 @@ namespace Reliv\RcmAxosoft\LogPrepare;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class DescriptionFromLogAll extends StringFromLogAbstract implements StringFromLog
+class DescriptionFromLogAll extends StringFromLogAbstract implements DescriptionFromLog
 {
     /**
      * @var StringFromLogRequest
@@ -92,8 +92,8 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements StringFromL
         }
 
         if (isset($extra['trace'])) {
-            $description .= 'Stack trace: ' . $lineBreak
-                . $extra['trace'];
+            $stackTrack = str_replace("\n", $lineBreak, $extra['trace']);
+            $description .= 'Stack trace: ' . $lineBreak . $stackTrack;
         }
 
         $exceptionString = $this->stringFromLogExtraException->__invoke(
@@ -128,8 +128,6 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements StringFromL
         if (!empty($sessionString)) {
             $description .= ' Session: ' . $sessionString . $lineBreak;
         }
-
-        // NOT REQUIRED $description = str_replace("\n", '<\br>', $description);
 
         return $description;
     }

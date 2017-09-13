@@ -11,19 +11,11 @@ use Reliv\AxosoftApi\V5\ApiCreate\AbstractApiRequestCreate;
 use Reliv\AxosoftApi\V5\Items\ApiRequestList;
 use Reliv\AxosoftApi\V5\Items\ApiResponseList;
 use Reliv\RcmAxosoft\Exception\AxosoftLoggerException;
+use Reliv\RcmAxosoft\LogPrepare\DescriptionFromLog;
+use Reliv\RcmAxosoft\LogPrepare\SummaryFromLog;
 
 /**
- * Class AxosoftLoggerPsr
- *
- * PHP version 5
- *
- * @category  Reliv
- * @package   Reliv\RcmAxosoft
- * @author    James Jervis <jjervis@relivinc.com>
- * @copyright 2016 Reliv International
- * @license   License.txt New BSD License
- * @version   Release: <package_version>
- * @link      https://github.com/reliv
+ * @author James Jervis - https://github.com/jerv13
  */
 class AxosoftLoggerPsr extends AbstractLogger implements LoggerInterface
 {
