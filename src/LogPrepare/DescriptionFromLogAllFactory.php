@@ -19,7 +19,7 @@ class DescriptionFromLogAllFactory
     public function __invoke($container)
     {
         return new DescriptionFromLogAll(
-            $container->get(StringFromLogRequest::class),
+            $container->get(StringFromLogUrl::class),
             $container->get(StringFromLogExtraException::class),
             $container->get(StringFromLogServerDump::class),
             $container->get(StringFromLogSession::class)

@@ -8,9 +8,9 @@ namespace Reliv\RcmAxosoft\LogPrepare;
 class DescriptionFromLogAll extends StringFromLogAbstract implements DescriptionFromLog
 {
     /**
-     * @var StringFromLogRequest
+     * @var StringFromLogUrl
      */
-    protected $stringFromLogRequest;
+    protected $stringFromLogUrl;
 
     /**
      * @var StringFromLogExtraException
@@ -28,18 +28,18 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements Description
     protected $stringFromLogSession;
 
     /**
-     * @param StringFromLogRequest        $stringFromLogRequest
+     * @param StringFromLogUrl        $stringFromLogUrl
      * @param StringFromLogExtraException $stringFromLogExtraException
      * @param StringFromLogServerDump     $stringFromLogServerDump
      * @param StringFromLogSession        $stringFromLogSession
      */
     public function __construct(
-        StringFromLogRequest $stringFromLogRequest,
+        StringFromLogUrl $stringFromLogUrl,
         StringFromLogExtraException $stringFromLogExtraException,
         StringFromLogServerDump $stringFromLogServerDump,
         StringFromLogSession $stringFromLogSession
     ) {
-        $this->stringFromLogRequest = $stringFromLogRequest;
+        $this->stringFromLogUrl = $stringFromLogUrl;
         $this->stringFromLogExtraException = $stringFromLogExtraException;
         $this->stringFromLogServerDump = $stringFromLogServerDump;
         $this->stringFromLogSession = $stringFromLogSession;
@@ -69,15 +69,15 @@ class DescriptionFromLogAll extends StringFromLogAbstract implements Description
 
         $description .= 'Level: ' . $priority . $lineBreak;
 
-        $requestString = $this->stringFromLogRequest->__invoke(
+        $urlString = $this->stringFromLogUrl->__invoke(
             $priority,
             $message,
             $extra,
             $options
         );
 
-        if (!empty($requestString)) {
-            $description .= 'Request: ' . $lineBreak . $requestString . $lineBreak;
+        if (!empty($urlString)) {
+            $description .= 'URL: '  . $urlString . $lineBreak;
         }
 
         if (isset($extra['file'])) {
